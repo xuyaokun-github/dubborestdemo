@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+    <!-- provider's application name, used for tracing dependency relationship -->
+    <dubbo:application name="demo-provider"/>
+
+    <!-- use multicast registry center to export service -->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+
+    <!-- use dubbo protocol to export service on port 20880 -->
+    <dubbo:protocol name="dubbo" port="20880"/>
+    <!-- 使用内嵌式tomcat，试过是ok的 -->
+<!--
+    <dubbo:protocol name="rest" port="8080" server="tomcat"/>
+-->
+    <!-- 用jetty,也试过是能成功的，再一次证明是包的问题-->
+<!--
+    <dubbo:protocol name="rest" port="8080"  server="jetty"/>
+-->
+
+    <!--Restful的集成式配置 -->
+    <dubbo:protocol name="rest" port="8080" server="servlet"/>
+
+
+    <bean id="demoService" class="com.kun.dubborestdemo.dubbo.service.provider.impl.ServiceImpl"/>
+    <dubbo:service interface="com.kun.dubborestdemo.dubbo.service.provider.ServiceFacade" ref="demoService" protocol="rest"/>
+
+
+    <bean id="DemoService" class="com.kun.dubborestdemo.service.DemoService"/>
+    <bean id="springContextUtil" class="com.kun.dubborestdemo.util.SpringContextUtil" lazy-init="false"></bean>
+
+</beans>
